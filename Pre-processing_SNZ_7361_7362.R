@@ -3,16 +3,16 @@
 
 setwd("/home/ubuntu/ChildYouthJustice/Datasets/")
 csvdf    <- read.csv("TABLECODE7361_ALL_Data_Children and young people charged in court - most serious offence calendar year.csv", stringsAsFactors = FALSE)
+names(csvdf)[names(csvdf) == "Main.offence"] <- "MainOffence"  # Remove dot from column name
 
-outputdf <- csvdf[order(csvdf$Year, csvdf$Gender, csvdf$Ethnicity, csvdf$Age, csvdf$Outcome, csvdf$Main.offence),]
+outputdf <- csvdf[order(csvdf$Year, csvdf$Gender, csvdf$Ethnicity, csvdf$Age, csvdf$Outcome, csvdf$MainOffence),]
 
 # Remove all group summary rows (i.e., totals)
-rep_unique_outputdf <- subset(outputdf, Age != "Total Age" & Main.offence != "Total Offences" & Gender != "Total Gender" & Ethnicity != "Total Ethnicity" & Outcome != "Total Outcomes")
+rep_unique_outputdf <- subset(outputdf, Age != "Total Age" & MainOffence != "Total Offences" & Gender != "Total Gender" & Ethnicity != "Total Ethnicity" & Outcome != "Total Outcomes")
 totrows <- length(rep_unique_outputdf$Value)
 totrows
 
 # Extract only those outcomes that will not be included in Table 7362 (e.g., discharged, dismissed, withdrawn, etc.)
-#rep_unique_outputdf <- subset(rep_unique_outputdf, (Outcome == "Youth Court proved (absolute discharge under s282)" | Outcome == "Dismissed" | Outcome == "Withdrawn" | Outcome == "Other outcome"))
 rep_unique_outputdf <- subset(rep_unique_outputdf, (Outcome == "Youth Court proved (absolute discharge under s282)" | Outcome == "Dismissed" | Outcome == "Withdrawn"))
 
 totrows <- length(rep_unique_outputdf$Value)
@@ -28,13 +28,14 @@ dup_unique_outputdf_7361 <- rep_unique_outputdf[rep(row.names(rep_unique_outputd
 # Table 7362: Child and Youth Sentences: repeat each line by the number in the Value field
 
 csvdf    <- read.csv("TABLECODE7362_ALL_Data_Children and young people given an order in court - most serious offence calendar year.csv", stringsAsFactors = FALSE)
+names(csvdf)[names(csvdf) == "Main.offence"] <- "MainOffence" # Remove dot from column name
 
-ordersdf <- csvdf[order(csvdf$Year, csvdf$Gender, csvdf$Ethnicity, csvdf$Age, csvdf$Order, csvdf$Main.offence),]
+ordersdf <- csvdf[order(csvdf$Year, csvdf$Gender, csvdf$Ethnicity, csvdf$Age, csvdf$Order, csvdf$MainOffence),]
 head(ordersdf)
 ordersdf$Year <- as.factor(ordersdf$Year)
 
 # filter out rows that provide Total counts for categories
-rep_unique_outputdf <- subset(ordersdf, Age != "Total Age" & Main.offence != "Total Offences" & Gender != "Total Gender" & Ethnicity != "Total Ethnicity" & Order != "Total Sentences")
+rep_unique_outputdf <- subset(ordersdf, Age != "Total Age" & MainOffence != "Total Offences" & Gender != "Total Gender" & Ethnicity != "Total Ethnicity" & Order != "Total Sentences")
 totrows <- length(rep_unique_outputdf$Value)
 totrows
 
